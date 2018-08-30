@@ -2,10 +2,6 @@ import Foundation
 
 protocol Symbol { }
 
-protocol TerminalNode: Symbol {
-    init(_ substring: Substring)
-}
-
 protocol PegParser: AnyObject {
     
     var parseState: ParseState { get set }
@@ -22,8 +18,6 @@ protocol PegParser: AnyObject {
     func matchSequence(_ elements: @autoclosure () -> Symbol?) -> [Symbol]?
     func addToCurrentMatchSequence(_ node: Symbol?) -> Symbol?
 }
-
-extension String: TerminalNode { }
 
 // ParseState contains the text to be parsed, the position reached in parsing, and some helper functions. It does not do any parsing itself.
 struct ParseState {
