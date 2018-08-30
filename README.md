@@ -5,7 +5,7 @@ An experiment in writing a parsing framework in Swift.
 
 Features:
 
-1. Very small: a single file [](./peg.swift), a few classes
+1. Very small: a single file ([peg.swift](./peg.swift)), a few classes
 2. Grammar can be written directly in code
 3. Can output any Types (not just 'nodes')
 
@@ -17,7 +17,7 @@ Not features:
 Example
 -------
 
-An example (of a calculator) is in [./main.swift].
+An example (of a calculator) is in [main.swift](./main.swift).
 
 To run it:
 
@@ -27,7 +27,7 @@ To run it:
 Installation
 ------------
 
-To install it in your own code, just copy the content of the peg.swift file.
+To install it in your own code, just copy the content of the [peg.swift](./peg.swift) file into your code.
 
 Usage
 -----
