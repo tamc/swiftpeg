@@ -1,13 +1,18 @@
-Swift Parsing Expression Grammar Micro-Framework
-================================================
+A Swift Parsing Micro-Framework
+===============================
 
 An experiment in writing a parsing framework in Swift.
 
 Features:
 
-1. Very small: a single file [./peg.swift], a few classes
+1. Very small: a single file [](./peg.swift), a few classes
 2. Grammar can be written directly in code
 3. Can output any Types (not just 'nodes')
+
+Not features:
+
+1. Not very fast
+2. Not a standard format
 
 Example
 -------
