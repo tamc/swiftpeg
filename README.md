@@ -86,3 +86,16 @@ There are also look-ahead operators
     notFollowedBy(...)
 
 You can nest and make use of functions, see [./main.swift] for examples.
+
+Warning on regular expressions
+------------------------------
+
+You can pass a NSRegularExpression instead of a String to terminal:
+
+    terminal(NSRegularExpression(pattern: "([+-]?[0-9][0-9]*")!)) 
+
+Which can simplify (and speed up?) some hand written grammars.
+
+However, at least on OSX NSRegularExpression matching causes some object to be added to an autoreleasepool that is only released at the end of a run loop. If the run loop doesn't end soon (because, say, you are parsing in a command line app) then you can appear to leak memory. You can fix it by wrapping a section of code in autoreleasepool {}. You can see an example of this commented out in the `termina(_ regexp: NSRegularExpression:...)` method of [Peg.swift](./Peg.swift). 
+
+For performance you might want to move the autorelease higher up in your code. But there is no clear way of judging this.
