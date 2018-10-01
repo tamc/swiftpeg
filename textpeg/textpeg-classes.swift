@@ -8,7 +8,7 @@ protocol NonTerminal: Symbol, CustomStringConvertible {
 
 extension NonTerminal {
   var description: String {
-    return "\(type(of:self))(\(children))"
+    return "\(type(of: self))(\(children))"
   }
 }
 

@@ -1,4 +1,4 @@
-import Foundation 
+import Foundation
 
 class TextPeg: PegParser {
   var parseState: ParseState
@@ -52,7 +52,7 @@ class TextPeg: PegParser {
   }
 
   func prefixed() -> Symbol? {
-    return ignored() || not_followed_by() || followed_by() 
+    return ignored() || not_followed_by() || followed_by()
   }
 
   func suffixed() -> Symbol? {
