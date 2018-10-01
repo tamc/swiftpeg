@@ -14,9 +14,9 @@ func valueFor(_ symbol: Symbol) -> Double {
 }
 
 class Calculation: Symbol {
-    
+
     let value: Double
-    
+
     init?(_ symbols: [Symbol]) {
         var symbols = symbols
         guard symbols.isEmpty == false else { self.value = 0; return }
@@ -67,11 +67,10 @@ struct Divide: Operator {
   }
 }
 
-
 extension Double: Symbol { }
 
 class Calculator: PegParser {
-    
+
     static let integerRegexp = try! NSRegularExpression(pattern: "[+-]?[0-9]+(.[0-9]+)?([eE][+-]?[0-9]+)?", options: [])
 
     var parseState: ParseState
@@ -79,38 +78,38 @@ class Calculator: PegParser {
     init(_ string: String) {
         parseState = ParseState(textToParse: string)
     }
-    
+
     func expression() -> Symbol? {
         return sum() || product() || value()
     }
-    
+
     func sum() -> Symbol? {
         return nonterminal(Calculation.init, match: (product() || value()) && oneOrMore(sumOperators() && (product() || value())))
     }
-    
+
     func product() -> Symbol? {
         return nonterminal(Calculation.init, match: value() && oneOrMore(productOperators() && value()))
     }
-    
+
     func sumOperators() -> Symbol? {
         return terminal("+", Add.init) || terminal("-", Subtract.init)
     }
-    
+
     func productOperators() -> Symbol? {
         return terminal("*", Multiply.init) || terminal("/", Divide.init)
     }
-    
+
     func value() -> Symbol? {
         return (terminal("(") && expression() && terminal(")")) || number()
     }
-    
+
     func number() -> Symbol? {
         return terminal(Calculator.integerRegexp, Double.init)
-    }    
+    }
 }
 
 print("Enter a sum, and press enter, ctrl-c to exit")
-while true { 
+while true {
   let s = readLine(strippingNewline: true)!
   if let c = Calculator(s).expression() as? Calculation {
     print(c.value)

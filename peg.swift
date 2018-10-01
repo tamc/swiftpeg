@@ -3,9 +3,9 @@ import Foundation
 protocol Symbol { }
 
 protocol PegParser: AnyObject {
-    
+
     var parseState: ParseState { get set }
-    
+
     func ignore(_ match: @autoclosure () -> Symbol?) -> Symbol?
     func optional(_ match: Symbol?) -> Symbol?
     func oneOrMore(_ match: @autoclosure () -> Symbol?) -> Symbol?
@@ -21,10 +21,10 @@ protocol PegParser: AnyObject {
 
 // ParseState contains the text to be parsed, the position reached in parsing, and some helper functions. It does not do any parsing itself.
 struct ParseState {
-    
+
     // text is the entire string we are parsing
     let text: String
-    
+
     // index is the position we have reached in text
     private(set) var index: String.Index {
         didSet {
@@ -35,37 +35,36 @@ struct ParseState {
     // remainingText is the part of text that we have not yet parsed. It is changed when the index is changed.
     private(set) var remainingText: Substring
 
-    
     // Any IgnoredNode will be skipped when populating non-terminal nodes
     struct IgnoredNode: Symbol { }
     static let ignoredNode = IgnoredNode()
 
     // Nonterminal are created from a sequence of terminal and non-terminal nodes. matchSequences keeps the sequences that are currently being checked
     var matchSequences: [[Symbol]]
-    
+
     // indexOfCurrentMatchSequence points to the last array of nodes in matchSequences
     var indexOfCurrentMatchSequence: Array<[Symbol]>.Index { return matchSequences.index(before: matchSequences.endIndex) }
-    
+
     init(textToParse: String, startIndex: String.Index) {
         self.text = textToParse
         self.index = startIndex
         self.matchSequences = [[]] // Contains an array for the top level of matches
         self.remainingText = textToParse[index...]
     }
-    
+
     // convenience initalizer that starts at the beginning of the string
     init(textToParse: String) {
         self.init(textToParse: textToParse, startIndex: textToParse.startIndex)
     }
-    
+
     mutating func moveIndexForward(by offset: Int) {
         index = text.index(index, offsetBy: offset)
     }
-    
+
     mutating func moveIndex(to newIndex: String.Index) {
         index = newIndex
     }
-    
+
 }
 
 extension PegParser {
@@ -73,11 +72,11 @@ extension PegParser {
         guard let _ = matchSequence(match) else { return nil }
         return ParseState.ignoredNode
     }
-    
+
     func optional(_ match: Symbol?) -> Symbol? {
         return match ?? ParseState.ignoredNode
     }
-    
+
     func oneOrMore(_ match: @autoclosure () -> Symbol?) -> Symbol? {
         guard var m = match() else { return nil }
         while let c = match() {
@@ -85,7 +84,7 @@ extension PegParser {
         }
         return m
     }
-    
+
     func zeroOrMore(_ match: @autoclosure () -> Symbol?) -> Symbol? {
         var m: Symbol? = ParseState.ignoredNode
         while let c = match() {
@@ -93,7 +92,7 @@ extension PegParser {
         }
         return m
     }
-    
+
     func followedBy(_ match: @autoclosure () -> Symbol?) -> Symbol? {
         let startIndex = parseState.index
         defer { parseState.moveIndex(to: startIndex) }
@@ -103,18 +102,18 @@ extension PegParser {
             return nil
         }
     }
-    
+
     func notFollowedBy(_ match: @autoclosure () -> Symbol?) -> Symbol? {
         if let _ = followedBy(match) { return nil }
         return ParseState.ignoredNode
     }
-    
+
     func nonterminal(_ type: ([Symbol]) -> Symbol?, match: @autoclosure () -> Symbol?) -> Symbol? {
         guard let children = matchSequence(match) else { return nil }
         guard let symbol = type(children) else { return nil }
         return addToCurrentMatchSequence(symbol)
     }
-    
+
     func terminal(_ string: String, _ type: ((Substring) -> Symbol?)? = nil) -> Symbol? {
         guard parseState.remainingText.hasPrefix(string) else { return nil}
         let startIndex = parseState.index
@@ -124,7 +123,7 @@ extension PegParser {
         guard let t = type(substring) else { return ParseState.ignoredNode }
         return addToCurrentMatchSequence(t)
     }
-    
+
     func terminal(_ regexp: NSRegularExpression, _ type: ((Substring) -> Symbol?)? = nil) -> Symbol? {
         // NSRegular expressions etc seem to get added to an auto release pool. We need to manually release them to avoid a leak.
         // return autoreleasepool { () -> Symbol? in
@@ -139,7 +138,7 @@ extension PegParser {
             return addToCurrentMatchSequence(t)
         //}
     }
-    
+
     func matchSequence(_ elements: @autoclosure () -> Symbol?) -> [Symbol]? {
         let startIndex = parseState.index
         parseState.matchSequences.append([])
@@ -151,7 +150,7 @@ extension PegParser {
             return nil
         }
     }
-    
+
     func addToCurrentMatchSequence(_ node: Symbol?) -> Symbol? {
         if let node = node, node is ParseState.IgnoredNode == false {
             parseState.matchSequences[parseState.indexOfCurrentMatchSequence].append(node)
