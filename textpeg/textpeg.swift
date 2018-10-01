@@ -1,6 +1,6 @@
 import Foundation
 
-class TextPeg: PegParser {
+class TextPegParser: PegParser {
   var parseState: ParseState
 
   init(text: String) {
@@ -8,7 +8,7 @@ class TextPeg: PegParser {
   }
 
   func text_peg() -> Symbol? {
-    return oneOrMore(spacing() && (node() || definition()))
+    return nonterminal(TextPeg.init, match: oneOrMore(spacing() && (node() || definition())))
   }
 
   func node() -> Symbol? {

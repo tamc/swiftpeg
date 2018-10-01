@@ -12,6 +12,13 @@ extension NonTerminal {
   }
 }
 
+struct TextPeg: NonTerminal {
+  let children: [Symbol]
+  init?(children: [Symbol]) {
+    self.children = children
+  }
+}
+
 struct Node: NonTerminal {
   let children: [Symbol]
   init?(children: [Symbol]) {
