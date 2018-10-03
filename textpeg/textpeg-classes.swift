@@ -2,132 +2,96 @@ import Foundation
 
 extension String: Symbol {}
 
-protocol NonTerminal: Symbol, CustomStringConvertible {
-  var children: [Symbol] { get }
+protocol IndentedStringConvertible {
+  func indentedDescription(indent: String, depth: Int) -> String
 }
 
-extension NonTerminal {
+class NonTerminalClass: Symbol, CustomStringConvertible, IndentedStringConvertible {
+  let children: [Symbol]
+  init?(children: [Symbol]) {
+    self.children = children
+  }
   var description: String {
-    return "\(type(of: self))(\(children))"
+    return indentedDescription()
+  }
+
+  func indentedDescription(indent: String = "  ", depth: Int = 0) -> String {
+    var description: [String] = ["\(String(repeating:indent, count:depth))\(type(of: self))"]
+    for child in children {
+      if let c = child as? IndentedStringConvertible {
+        description.append(c.indentedDescription(indent: indent, depth: depth + 1))
+      } else {
+        description.append("\(String(repeating:indent, count: depth+1))\(String(describing:child))")
+      }
+    }
+    return description.joined(separator: "\n")
   }
 }
 
-struct TextPeg: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
+class SymbolClass: Symbol, CustomStringConvertible {
+  let substring: Substring
+  init?(substring: Substring) {
+    self.substring = substring
+  }
+  var description: String {
+    return "\(type(of: self)) \"\(substring)\""
   }
 }
 
-struct Node: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
+class Identifier: SymbolClass {
+}
+
+class TextPeg: NonTerminalClass {
+}
+
+class Node: NonTerminalClass {
+  override var description: String  {
+    return "\(super.description)\n"
   }
 }
 
-struct Definition: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
+class Definition: NonTerminalClass {
+  override var description: String  {
+    return "\(super.description)\n"
   }
 }
 
-struct Identifier: Symbol {
-  init?(substring: Substring) {}
+
+class Sequence: NonTerminalClass {
 }
 
-struct Sequence: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class Alternatives: NonTerminalClass {
 }
 
-struct Alternatives: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class NotFollowedBy: NonTerminalClass {
 }
 
-struct Divider: Symbol {
-  init?(substring: Substring) {}
+class FollowedBy: NonTerminalClass {
 }
 
-struct NotFollowedBy: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class Ignored: NonTerminalClass {
 }
 
-struct FollowedBy: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class Optional: NonTerminalClass {
 }
 
-struct Ignored: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class AnyNumberOf: NonTerminalClass {
 }
 
-struct Optional: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class OneOrMore: NonTerminalClass {
 }
 
-struct AnyNumberOf: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class Brackets: NonTerminalClass {
 }
 
-struct OneOrMore: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class TerminalString: NonTerminalClass {
 }
 
-struct Brackets: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class TerminalCharacterRange: NonTerminalClass {
 }
 
-struct TerminalString: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class TerminalRegexp: NonTerminalClass {
 }
 
-struct TerminalCharacterRange: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
-}
-
-struct TerminalRegexp: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
-}
-
-struct AnyCharacter: NonTerminal {
-  let children: [Symbol]
-  init?(children: [Symbol]) {
-    self.children = children
-  }
+class AnyCharacter: NonTerminalClass {
 }

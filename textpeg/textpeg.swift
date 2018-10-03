@@ -44,7 +44,7 @@ class TextPegParser: PegParser {
   }
 
   func divider() -> Symbol? {
-    return terminal("||", Divider.init) && spacing()
+    return terminal("|") && spacing()
   }
 
   func elements() -> Symbol? {
@@ -108,7 +108,7 @@ class TextPegParser: PegParser {
   }
 
   func terminal_regexp() -> Symbol? {
-    return nonterminal(TerminalRegexp.init, match: terminal("/") && terminal(r("(\\/||[^\\x2f])*"), String.init) && terminal("/") && spacing())
+    return nonterminal(TerminalRegexp.init, match: terminal("/") && terminal(r("[^\u{2f}]*"), String.init) && terminal("/") && spacing())
   }
 
   func any_character() -> Symbol? {
@@ -116,7 +116,7 @@ class TextPegParser: PegParser {
   }
 
   func end_of_line() -> Symbol? {
-    return terminal(r("[\n\r]+||\\z"))
+    return terminal(r("[\\r\\n]+|\\z"), String.init)
   }
 
   func spacing() -> Symbol? {
@@ -125,6 +125,6 @@ class TextPegParser: PegParser {
 
   private func r(_ pattern: String) -> NSRegularExpression {
     // FIXME: Cache
-    return try! NSRegularExpression(pattern: pattern, options: [])
+    return try! NSRegularExpression(pattern: "^\(pattern)", options: [])
   }
 }
