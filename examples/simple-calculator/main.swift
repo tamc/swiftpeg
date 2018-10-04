@@ -108,7 +108,7 @@ class Calculator: PegParser {
     }
 }
 
-print("Enter a sum, and press enter, ctrl-c to exit")
+print("Enter a sum, like 1.0+1.0 and press enter, ctrl-c to exit")
 while true {
   let s = readLine(strippingNewline: true)!
   if let c = Calculator(s).expression() as? Calculation {

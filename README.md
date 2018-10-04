@@ -17,12 +17,14 @@ Not features:
 Example
 -------
 
-An example (of a calculator) is in [main.swift](./main.swift).
+An example (of a calculator) is in [examples/simple-calculator/main.swift](./examples/simple-calculator/main.swift).
 
 To run it:
+  
+  cd examples/simple-calculator
+  make
+  ./simple-calculator
 
-    swiftc peg.swift main.swift
-    ./main
 
 Installation
 ------------
