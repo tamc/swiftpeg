@@ -8,7 +8,7 @@ class NonTerminalClass: Symbol, CustomStringConvertible {
         self.children = children
     }
     var description: String {
-        return indentedDescription()
+      return "\(type(of: self)) \"\(children)\""
     }
 }
 

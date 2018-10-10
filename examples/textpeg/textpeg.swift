@@ -116,7 +116,7 @@ class TextPegParser: PegParser {
     }
     
     func end_of_line() -> Symbol? {
-        return terminal(r("[\\r\\n]+|\\z"), String.init)
+        return terminal(r("[\\r\\n]+|\\z"))
     }
     
     func spacing() -> Symbol? {
