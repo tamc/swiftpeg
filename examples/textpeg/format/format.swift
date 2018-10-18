@@ -106,7 +106,7 @@ extension OneOrMore: Formatted {
   }
 }
 
-extension Brackets: Formatted {
+extension BracketedExpression: Formatted {
   func formatted() -> String {
     return "(\(formattedChildren.joined(separator:"")))"
   }

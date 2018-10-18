@@ -22,8 +22,6 @@ class SymbolClass: Symbol, CustomStringConvertible {
     }
 }
 
-class Identifier: SymbolClass {
-}
 
 class TextPeg: NonTerminalClass {
 }
@@ -40,6 +38,8 @@ class Definition: NonTerminalClass {
     }
 }
 
+class Identifier: NonTerminalClass {
+}
 
 class Sequence: NonTerminalClass {
 }
@@ -65,7 +65,7 @@ class AnyNumberOf: NonTerminalClass {
 class OneOrMore: NonTerminalClass {
 }
 
-class Brackets: NonTerminalClass {
+class BracketedExpression: NonTerminalClass {
 }
 
 class TerminalString: NonTerminalClass {

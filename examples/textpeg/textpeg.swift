@@ -8,7 +8,7 @@ class TextPegParser: PegParser {
     }
     
     func text_peg() -> Symbol? {
-        return nonterminal(TextPeg.init, match: oneOrMore(spacing() && (node() || definition())))
+        return nonterminal(TextPeg.init, match: zeroOrMore(spacing() && (node() || definition())))
     }
     
     func node() -> Symbol? {
@@ -20,7 +20,7 @@ class TextPegParser: PegParser {
     }
     
     func identifier() -> Symbol? {
-        return terminal(r("[a-zA-Z_][a-zA-Z0-9_]*"), Identifier.init) && spacing()
+        return nonterminal(Identifier.init, match: terminal(r("[a-zA-Z_][a-zA-Z0-9_]*"), String.init) && spacing())
     }
     
     func assigns() -> Symbol? {
@@ -88,7 +88,7 @@ class TextPegParser: PegParser {
     }
     
     func bracketed_expression() -> Symbol? {
-        return nonterminal(Brackets.init, match: terminal("(") && spacing() && expression() && terminal(")") && spacing())
+        return nonterminal(BracketedExpression.init, match: terminal("(") && spacing() && expression() && terminal(")") && spacing())
     }
     
     func terminal_string() -> Symbol? {
@@ -100,7 +100,7 @@ class TextPegParser: PegParser {
     }
     
     func single_quoted_string() -> Symbol? {
-        return terminal("'") && terminal(r("[^']*"), String.init) && terminal("'") && spacing()
+        return terminal("\'") && terminal(r("[^']*"), String.init) && terminal("\'") && spacing()
     }
     
     func terminal_character_range() -> Symbol? {
@@ -116,7 +116,7 @@ class TextPegParser: PegParser {
     }
     
     func end_of_line() -> Symbol? {
-        return terminal(r("[\\r\\n]+|\\z"))
+        return terminal(r("[\\n\\r]+|\\z"))
     }
     
     func spacing() -> Symbol? {
