@@ -1,5 +1,14 @@
 import Foundation
 
+/// Cached regular expressions
+fileprivate var cache: [String: NSRegularExpression] = [:]
+fileprivate func r(_ pattern: String) -> NSRegularExpression {
+  if let regexp = cache[pattern] { return regexp }
+  let newRegexp = try! NSRegularExpression(pattern: "^\(pattern)", options: [])
+  cache[pattern] = newRegexp
+  return newRegexp
+}
+
 class TextPegParser: PegParser {
   var parseState: ParseState
 
@@ -123,8 +132,5 @@ class TextPegParser: PegParser {
     return terminal(r("[ \\t]*"))
   }
 
-  private func r(_ pattern: String) -> NSRegularExpression {
-      // FIXME: Cache
-      return try! NSRegularExpression(pattern: "^\(pattern)", options: [])
-  }
+
 }
